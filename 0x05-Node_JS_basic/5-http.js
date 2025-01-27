@@ -13,10 +13,10 @@ const DB_FILE = process.argv.length > 2 ? process.argv[2] : '';
  */
 const countStudents = (dataPath) => new Promise((resolve, reject) => {
   if (!dataPath) {
-	  reject(new Error('Cannot load the database'));
+    reject(new Error('Cannot load the database'));
   }
-	if (dataPath) {
-		fs.readFile(dataPath, (err, data) => {
+  if (dataPath) {
+    fs.readFile(dataPath, (err, data) => {
       if (err) {
         reject(new Error('Cannot load the database'));
       }
@@ -29,6 +29,7 @@ const countStudents = (dataPath) => new Promise((resolve, reject) => {
           0,
           dbFieldNames.length - 1,
         );
+
         for (const line of fileLines.slice(1)) {
           const studentRecord = line.split(',');
           const studentPropValues = studentRecord.slice(
@@ -65,7 +66,7 @@ const SERVER_ROUTE_HANDLERS = [
   {
     route: '/',
     handler(_, res) {
-      const responseText = 'Hello Holberton School!';
+      const responseText = 'Hello ALX!';
       res.setHeader('Content-Type', 'text/plain');
       res.setHeader('Content-Length', responseText.length);
       res.statusCode = 200;
@@ -81,33 +82,30 @@ const SERVER_ROUTE_HANDLERS = [
           responseParts.push(report);
           const responseText = responseParts.join('\n');
           res.setHeader('Content-Type', 'text/plain');
-					                res.setHeader('Content-Length', responseText.length);
-					                res.statusCode = 200;
-					                res.write(Buffer.from(responseText));
-					              })
-			              .catch((err) => {
-					                responseParts.push(err instanceof Error ? err.message : err.toString());
-					                const responseText = responseParts.join('\n');
-					                res.setHeader('Content-Type', 'text/plain');
-					                res.setHeader('Content-Length', responseText.length);
-					                res.statusCode = 200;
-					                res.write(Buffer.from(responseText));
-					              });
-			          },
-		    },
+          res.setHeader('Content-Length', responseText.length);
+          res.statusCode = 200;
+          res.write(Buffer.from(responseText));
+        })
+        .catch((err) => {
+          responseParts.push(err instanceof Error ? err.message : err.toString());
+          const responseText = responseParts.join('\n');
+          res.setHeader('Content-Type', 'text/plain');
+          res.setHeader('Content-Length', responseText.length);
+          res.statusCode = 200;
+          res.write(Buffer.from(responseText));
+        });
+    },
+  },
 ];
-
 app.on('request', (req, res) => {
-	  for (const routeHandler of SERVER_ROUTE_HANDLERS) {
-		      if (routeHandler.route === req.url) {
-			            routeHandler.handler(req, res);
-			            break;
-			          }
-		    }
+  for (const routeHandler of SERVER_ROUTE_HANDLERS) {
+    if (routeHandler.route === req.url) {
+      routeHandler.handler(req, res);
+      break;
+    }
+  }
 });
-
 app.listen(PORT, HOST, () => {
-	  process.stdout.write(`Server listening at -> http://${HOST}:${PORT}\n`);
+  process.stdout.write(`Server listening at -> http://${HOST}:${PORT}\n`);
 });
-
 module.exports = app;
